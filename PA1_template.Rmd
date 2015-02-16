@@ -9,7 +9,7 @@ output:
 ## Loading and preprocessing the data
 
 ### Loading the activity File
-```{r ReadingActivityFile, echo=TRUE}
+```{r ReadingActivityFile, echo=TRUE, results='asis'}
 stepsData <- read.csv("activity.csv",header=TRUE,stringsAsFactors=FALSE)
 stepsData$date <- as.Date(stepsData$date,"%Y-%m-%d")
 
@@ -19,7 +19,7 @@ newStepsData <- stepsData
 ### Preprocessing the Data
 The data is summarized for everyday activity to generate the histogram.
 
-```{r preprocessing data, echo=TRUE}
+```{r preprocessing data, echo=TRUE, results='asis',fig.keep='all',fig.height=6}
 
 suppressWarnings(library(plyr))
 
@@ -34,7 +34,7 @@ stepSummary <- ddply(stepsData,.(date),
 
 ### ggplot is used to draw the required histogram to show the frequency distribution of Total Steps per day.
 
-```{r histgramplot, echo=TRUE}
+```{r histgramplot, echo=TRUE, results='asis',fig.keep='all',fig.height=6}
 suppressWarnings(library(ggplot2))
 
 vlineData <- data.frame(measure=c("Mean of Total Steps Taken",
@@ -54,7 +54,7 @@ print(first_plot)
 
 ### The mean and median for total steps per day is calculated and stored in data frame for printing.
 
-```{r mean, echo=TRUE}
+```{r mean, echo=TRUE, results='asis'}
 
 vlineData
 ```
@@ -62,7 +62,7 @@ vlineData
 
 ### Time Series plot for average number of steps taken across all days in every interval
 
-```{r timeseries plot, echo=TRUE}
+```{r timeseries plot, echo=TRUE, results='asis',fig.keep='all',fig.height=6}
 intervalSummary <- ddply(stepsData,.(interval),
                     summarize,
   				avgsteps=mean(steps,na.rm=TRUE))
@@ -79,7 +79,7 @@ plot(intervalSummary$interval,
 
 ### The interval that contains maximum number of steps.
 
-```{r indexmaximumSteps, echo=TRUE}
+```{r indexmaximumSteps, echo=TRUE, results='asis'}
 indexOfMaxAvgSteps <- which(intervalSummary$avgsteps == max(intervalSummary$avgsteps))     
 intervalSummary[indexOfMaxAvgSteps,1]
 
@@ -89,13 +89,13 @@ intervalSummary[indexOfMaxAvgSteps,1]
 
 ### Total number of missing values in the dataset
 
-```{r missingdatasetvalue, echo=TRUE}
+```{r missingdatasetvalue, echo=TRUE, results='asis'}
 length(which(is.na(stepsData$steps)))
 ```
 
 ### Strategy for filling missing value in the dataset. I chose to use mean for that 5-minute interval.
 
-```{r missingindexvalues, echo=TRUE}
+```{r missingindexvalues, echo=TRUE, results='asis'}
 naIndices <- which(is.na(stepsData$steps))
 
 for ( ind in naIndices) {
@@ -106,7 +106,7 @@ for ( ind in naIndices) {
 
 ### Histogram of steps taken each day with the missing values filled.
 
-```{r newhistogram, echo=TRUE}
+```{r newhistogram, echo=TRUE, results='asis',fig.keep='all',fig.height=6}
 
 newStepSummary <- ddply(newStepsData,.(date),
                     summarize,
@@ -131,14 +131,14 @@ print(second_plot)
 
 ### Printing the new mean and median. The new mean and median is higher than before. 
 
-```{r newmeanmedian, echo=TRUE}
+```{r newmeanmedian, echo=TRUE, results='asis'}
 newVlineData
 ```
 
 ### Comparing the histogram of data with NA values and without NA values.
 
 
-```{r comparitivegraphs, echo=TRUE}
+```{r comparitivegraphs, echo=TRUE, results='asis',fig.keep='all',fig.height=6}
 suppressWarnings(library(grid))
 suppressWarnings(library(gridExtra))
 grid.arrange(first_plot,second_plot,ncol=2)
@@ -149,7 +149,7 @@ grid.arrange(first_plot,second_plot,ncol=2)
 
 ### Yes. The weekday activity is more than the weekend activity throughout the day consistently
 
-```{r weekdayweekendcomparison, echo=TRUE}
+```{r weekdayweekendcomparison, echo=TRUE, results='asis',fig.keep='all',fig.height=6}
 
 weekDayData<- cbind(data.frame(dayOfWeek=weekdays(newStepsData$date),dayCat=weekdays(newStepsData$date)))
 

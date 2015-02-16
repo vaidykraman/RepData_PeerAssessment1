@@ -61,11 +61,9 @@ print(first_plot)
 vlineData
 ```
 
-```
-##                       measure    value
-## 1   Mean of Total Steps Taken  9354.23
-## 2 Median of Total Steps Taken 10395.00
-```
+                      measure    value
+1   Mean of Total Steps Taken  9354.23
+2 Median of Total Steps Taken 10395.00
 ## What is the average daily activity pattern?
 
 ### Time Series plot for average number of steps taken across all days in every interval
@@ -95,9 +93,7 @@ indexOfMaxAvgSteps <- which(intervalSummary$avgsteps == max(intervalSummary$avgs
 intervalSummary[indexOfMaxAvgSteps,1]
 ```
 
-```
-## [1] 835
-```
+[1] 835
 
 ## Imputing missing values
 
@@ -108,9 +104,7 @@ intervalSummary[indexOfMaxAvgSteps,1]
 length(which(is.na(stepsData$steps)))
 ```
 
-```
-## [1] 2304
-```
+[1] 2304
 
 ### Strategy for filling missing value in the dataset. I chose to use mean for that 5-minute interval.
 
@@ -156,11 +150,9 @@ print(second_plot)
 newVlineData
 ```
 
-```
-##                          measure    value
-## 1      Mean of Total Steps Taken 10766.19
-## 2 Median of Total Steps Taken =  10766.19
-```
+                         measure    value
+1      Mean of Total Steps Taken 10766.19
+2 Median of Total Steps Taken =  10766.19
 
 ### Comparing the histogram of data with NA values and without NA values.
 

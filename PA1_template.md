@@ -9,24 +9,23 @@ output:
 ## Loading and preprocessing the data
 
 ### Loading the activity File
-```{r ReadingActivityFile, echo=TRUE}
+
+```r
 stepsData <- read.csv("activity.csv",header=TRUE,stringsAsFactors=FALSE)
 stepsData$date <- as.Date(stepsData$date,"%Y-%m-%d")
 
 newStepsData <- stepsData
-
 ```
 ### Preprocessing the Data
 The data is summarized for everyday activity to generate the histogram.
 
-```{r preprocessing data, echo=TRUE}
 
+```r
 suppressWarnings(library(plyr))
 
 stepSummary <- ddply(stepsData,.(date),
                     summarize,
   				totalsteps=sum(steps,na.rm=TRUE))
-
 ```
 
 
@@ -34,7 +33,8 @@ stepSummary <- ddply(stepsData,.(date),
 
 ### ggplot is used to draw the required histogram to show the frequency distribution of Total Steps per day.
 
-```{r histgramplot, echo=TRUE}
+
+```r
 suppressWarnings(library(ggplot2))
 
 vlineData <- data.frame(measure=c("Mean of Total Steps Taken",
@@ -52,17 +52,26 @@ first_plot <- ggplot(stepSummary,aes(x=totalsteps)) +
 print(first_plot)
 ```
 
+![plot of chunk histgramplot](figure/histgramplot-1.png) 
+
 ### The mean and median for total steps per day is calculated and stored in data frame for printing.
 
-```{r mean, echo=TRUE}
 
+```r
 vlineData
+```
+
+```
+##                       measure    value
+## 1   Mean of Total Steps Taken  9354.23
+## 2 Median of Total Steps Taken 10395.00
 ```
 ## What is the average daily activity pattern?
 
 ### Time Series plot for average number of steps taken across all days in every interval
 
-```{r timeseries plot, echo=TRUE}
+
+```r
 intervalSummary <- ddply(stepsData,.(interval),
                     summarize,
   				avgsteps=mean(steps,na.rm=TRUE))
@@ -74,40 +83,50 @@ plot(intervalSummary$interval,
             main="Time Series plot of Average Steps By Time Interval", 
 			xlab="Time Interval", 
 			ylab="Average Steps")
-
 ```
+
+![plot of chunk timeseries plot](figure/timeseries plot-1.png) 
 
 ### The interval that contains maximum number of steps.
 
-```{r indexmaximumSteps, echo=TRUE}
+
+```r
 indexOfMaxAvgSteps <- which(intervalSummary$avgsteps == max(intervalSummary$avgsteps))     
 intervalSummary[indexOfMaxAvgSteps,1]
+```
 
+```
+## [1] 835
 ```
 
 ## Imputing missing values
 
 ### Total number of missing values in the dataset
 
-```{r missingdatasetvalue, echo=TRUE}
+
+```r
 length(which(is.na(stepsData$steps)))
+```
+
+```
+## [1] 2304
 ```
 
 ### Strategy for filling missing value in the dataset. I chose to use mean for that 5-minute interval.
 
-```{r missingindexvalues, echo=TRUE}
+
+```r
 naIndices <- which(is.na(stepsData$steps))
 
 for ( ind in naIndices) {
   newStepsData[ind,1] <- intervalSummary[which(intervalSummary$interval == stepsData[ind,3]),2]
 }
-
 ```
 
 ### Histogram of steps taken each day with the missing values filled.
 
-```{r newhistogram, echo=TRUE}
 
+```r
 newStepSummary <- ddply(newStepsData,.(date),
                     summarize,
   				totalsteps=sum(steps,na.rm=TRUE))
@@ -126,31 +145,41 @@ second_plot <- ggplot(newStepSummary,aes(x=totalsteps)) +
 	  geom_text(data=newVlineData,mapping=aes(x=value, y=0, label=measure), size = 4, angle=90, hjust=-0.1, vjust = -0.1,color="red")
 
 print(second_plot)
-
 ```
+
+![plot of chunk newhistogram](figure/newhistogram-1.png) 
 
 ### Printing the new mean and median. The new mean and median is higher than before. 
 
-```{r newmeanmedian, echo=TRUE}
+
+```r
 newVlineData
+```
+
+```
+##                          measure    value
+## 1      Mean of Total Steps Taken 10766.19
+## 2 Median of Total Steps Taken =  10766.19
 ```
 
 ### Comparing the histogram of data with NA values and without NA values.
 
 
-```{r comparitivegraphs, echo=TRUE}
+
+```r
 suppressWarnings(library(grid))
 suppressWarnings(library(gridExtra))
 grid.arrange(first_plot,second_plot,ncol=2)
-
 ```
+
+![plot of chunk comparitivegraphs](figure/comparitivegraphs-1.png) 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
 ### Yes. The weekday activity is more than the weekend activity throughout the day consistently
 
-```{r weekdayweekendcomparison, echo=TRUE}
 
+```r
 weekDayData<- cbind(data.frame(dayOfWeek=weekdays(newStepsData$date),dayCat=weekdays(newStepsData$date)))
 
 weekDayData$dayCat <- sub("Monday","Weekday",weekDayData$dayCat,fixed=TRUE)
@@ -174,6 +203,6 @@ ggplot(data=weekdaySummary, aes(x=interval,y=avgsteps,group=dayCat)) +
 	    labs(title="Activity comparison by Weekday and weekend") + 
 	    labs(x="Time Series Interval") + 
 	    labs(y="Average steps")
-					
-
 ```
+
+![plot of chunk weekdayweekendcomparison](figure/weekdayweekendcomparison-1.png) 
